@@ -14,5 +14,4 @@ This is my Calculator app that I created for a quick dive into WinForms. In this
 
 
 ### Todo
-1. Add functionality for keyboard presses to function as button presses.
-2. Fix order of operations.
+1. Fix order of operations.
