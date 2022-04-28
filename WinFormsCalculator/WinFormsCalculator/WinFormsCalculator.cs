@@ -160,12 +160,7 @@ namespace WinFormsCalculator
         /// </summary>
         private void CalculateTotal()
         {
-            /*
-             * Todo
-             * Operator handler
-             * Right side Operand
-             * Calculation
-             */
+            // Adds equal and operation name.
             this.NumberInput.Text += " = " + ParseOperation();
             FocusInput();
         }
@@ -206,17 +201,40 @@ namespace WinFormsCalculator
                     else if ("+-*/".Any(character => input[i] == character))
                     {
                         // Right side, calculate operation and set result to left side
-                        if(!leftSide)
+                        if (!leftSide)
                         {
                             // Gets operator
                             var operationType = GetOperationType(input[i]);
+
+                            //Check if we have a right side member
+                            if (operation.RightSide.Length == 0)
+                            {
+                                // Check operator is not a minus
+                                if (operationType != OperationType.Minus)
+                                {
+                                    throw new InvalidOperationException($"Operators +, *, /, or more than one - specified without a number.");
+                                }
+                                // Add minus to number if there is no left number
+                                operation.RightSide += input[i];
+                            }
+                            else
+                            {
+                                // Calculate previous equation and set to the left side
+                                operation.LeftSide = CalculateOperation(operation);
+
+                                // Set new operator
+                                operation.OperationType = operationType;
+
+                                //Clear the previous right number
+                                operation.RightSide = string.Empty;
+                            }
                         }
                         else
                         {
                             // Get operator
                             var operationType = GetOperationType(input[i]);
-                            
-                            //Check if there is a left side number
+
+                            //Check if there is an operator left side number with no number on left side.
                             if (operation.LeftSide.Length == 0)
                             {
                                 // Check operator is not a minus
@@ -230,7 +248,7 @@ namespace WinFormsCalculator
                             }
                             else
                             {
-                                // Left number and now an operator, so move to the right
+                                // Left number and operator are now parsed, so move to the right
 
                                 // set operation type
                                 operation.OperationType = operationType;
@@ -298,6 +316,7 @@ namespace WinFormsCalculator
                 throw new InvalidOperationException($"Failed calculation of: {left} {operation.OperationType} {right} | {ex.Message}");
             }
 
+
         }
 
         /// <summary>
@@ -346,6 +365,7 @@ namespace WinFormsCalculator
         /// </summary>
         private void FocusInput()
         {
+            // Focuses on text box and unhighlights
             this.NumberInput.Focus();
             this.NumberInput.SelectionLength = 0;
         }
