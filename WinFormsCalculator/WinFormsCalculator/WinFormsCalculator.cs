@@ -15,7 +15,7 @@ namespace WinFormsCalculator
         }
         #endregion
 
-        #region Clear and Backspace
+        #region Clear and Backspace Methods
         /// <summary>
         /// Clears all text from text box.
         /// </summary>
@@ -154,7 +154,81 @@ namespace WinFormsCalculator
 
         #endregion
 
-        #region Method helpers and Calculation
+        #region Calculation
+        /// <summary>
+        /// Calculates the equation and implements equation.
+        /// </summary>
+        private void CalculateTotal()
+        {
+            /*
+             * Todo
+             * Operator handler
+             * Right side Operand
+             * Calculation
+             */
+            this.NumberInput.Text += " " + ParseOperation();
+            FocusInput();
+        }
+
+        /// <summary>
+        /// Parses input eqution and calculates the result.
+        /// </summary>
+        private string ParseOperation()
+        {
+            try
+            {
+                // Get the user equation
+                var input = this.NumberInput.Text;
+
+                // Remove all spaces
+                input = input.Replace(" ", "");
+
+                // Creates an operation instance.
+                var operation = new Operation();
+                // Figures out which operand you are on.
+                var leftSide = true;
+                // Holds numbers and dot for parsing.
+                var numberString = "0123456789.";
+
+                // Loops from input string from left to right
+                for(int i = 0; i < input.Length; i++)
+                {
+                    // Catches numbers and period.
+                    if(numberString.Any(character => input[i] == character))
+                    {
+                        // Creates left side operand if on left side
+                        if (leftSide)
+                            operation.LeftSide = AddNumberPart(operation.LeftSide, input[i]);
+                    }
+                }
+
+                return String.Empty;
+            }
+            catch (Exception ex)
+            {
+                return $"Invalid equition. {ex.Message}";
+            }
+        }
+        /// <summary>
+        /// Attempts to add new char to current number, checking for valid character.
+        /// </summary>
+        /// <param name="currentNumber">The current number string.</param>
+        /// <param name="currentCharacter">The new character being added.</param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
+        private string AddNumberPart(string currentNumber, char newCharacter)
+        {
+            // Check if there is already a . in the number
+            if (newCharacter == '.' && currentNumber.Contains('.'))
+            {
+                throw new InvalidOperationException($"Number {currentNumber} already contains a decimal point; another cannot be added.");
+            }
+               
+            return currentNumber + newCharacter;
+        }
+        #endregion
+
+        #region Method helpers
         /// <summary>
         /// Focus method for focusing on text box after button click.
         /// </summary>
@@ -203,16 +277,6 @@ namespace WinFormsCalculator
 
             // Unhighlights text when something is deleted.
             this.NumberInput.SelectionLength = 0;
-        }
-
-        /// <summary>
-        /// Calculates the equation and implements equation.
-        /// </summary>
-        private void CalculateTotal()
-        {
-            /*
-             * Todo
-             */
         }
         #endregion
     }
