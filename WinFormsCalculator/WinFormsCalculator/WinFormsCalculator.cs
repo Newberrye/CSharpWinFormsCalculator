@@ -166,12 +166,12 @@ namespace WinFormsCalculator
              * Right side Operand
              * Calculation
              */
-            this.NumberInput.Text += " " + ParseOperation();
+            this.NumberInput.Text += " = " + ParseOperation();
             FocusInput();
         }
 
         /// <summary>
-        /// Parses input eqution and calculates the result.
+        /// Parses input equation and calculates the result.
         /// </summary>
         private string ParseOperation()
         {
@@ -199,16 +199,128 @@ namespace WinFormsCalculator
                         // Creates left side operand if on left side
                         if (leftSide)
                             operation.LeftSide = AddNumberPart(operation.LeftSide, input[i]);
+                        else
+                            operation.RightSide = AddNumberPart(operation.RightSide, input[i]);
+                    }
+                    // Catches operator type
+                    else if ("+-*/".Any(character => input[i] == character))
+                    {
+                        // Right side, calculate operation and set result to left side
+                        if(!leftSide)
+                        {
+                            // Gets operator
+                            var operationType = GetOperationType(input[i]);
+                        }
+                        else
+                        {
+                            // Get operator
+                            var operationType = GetOperationType(input[i]);
+                            
+                            //Check if there is a left side number
+                            if (operation.LeftSide.Length == 0)
+                            {
+                                // Check operator is not a minus
+                                if (operationType != OperationType.Minus)
+                                {
+                                    throw new InvalidOperationException($"Operators +, *, /, or more than one - specified without a number.");
+                                }
+
+                                // Add minus to number if there is no left number
+                                operation.LeftSide += input[i];
+                            }
+                            else
+                            {
+                                // Left number and now an operator, so move to the right
+
+                                // set operation type
+                                operation.OperationType = operationType;
+
+                                // Move to the right side
+                                leftSide = false;
+
+                            }
+                        }
                     }
                 }
 
-                return String.Empty;
+                // If done parsing and no exceptions
+                // Calculates Operation
+                return CalculateOperation(operation);
             }
             catch (Exception ex)
             {
                 return $"Invalid equition. {ex.Message}";
             }
         }
+
+        /// <summary>
+        /// Calculates an operation and returns the result
+        /// </summary>
+        /// <param name="operation"></param>
+        private string CalculateOperation(Operation operation)
+        {
+            // Store the number values
+            double left = 0;
+            double right = 0;
+
+            // Check if valid left side number
+            if (string.IsNullOrEmpty(operation.LeftSide) || !double.TryParse(operation.LeftSide, out left))
+            {
+                throw new InvalidOperationException($"Left side of the operation was not a number: {operation.LeftSide}");
+            }
+
+            // Check if valid right side number
+            if (string.IsNullOrEmpty(operation.RightSide) || !double.TryParse(operation.RightSide, out right))
+            {
+                throw new InvalidOperationException($"Left side of the operation was not a number: {operation.RightSide}");
+            }
+
+            // Tries to operate equation.
+            try
+            {
+
+                switch (operation.OperationType)
+                {
+                    case OperationType.Add:
+                        return Math.Round(left + right, 5).ToString();
+                    case OperationType.Minus:
+                        return Math.Round(left - right, 5).ToString();
+                    case OperationType.Multiply:
+                        return Math.Round(left * right, 5).ToString();
+                    case OperationType.Divide:
+                        return Math.Round(left / right, 5).ToString();
+                    default:
+                        throw new InvalidOperationException($"Unknown Operator type when calculating: {operation.OperationType}");
+                }
+            }
+            catch (Exception ex)
+            {
+                throw new InvalidOperationException($"Failed calculation of: {left} {operation.OperationType} {right} | {ex.Message}");
+            }
+
+        }
+
+        /// <summary>
+        /// Accepts characters and returns the known <see cref="OperationType"/>
+        /// </summary>
+        /// <param name="character">The character being parsed.</param>
+        private OperationType GetOperationType(char character)
+        {
+            switch (character)
+            {
+                case '+':
+                    return OperationType.Add;
+                case '-':
+                    return OperationType.Minus;
+                case '*':
+                    return OperationType.Multiply;
+                case '/':
+                    return OperationType.Divide;
+                default:
+                    throw new InvalidOperationException($"Unknown operator type: {character}");
+            }
+        }
+
         /// <summary>
         /// Attempts to add new char to current number, checking for valid character.
         /// </summary>
@@ -235,6 +347,7 @@ namespace WinFormsCalculator
         private void FocusInput()
         {
             this.NumberInput.Focus();
+            this.NumberInput.SelectionLength = 0;
         }
 
         /// <summary>
