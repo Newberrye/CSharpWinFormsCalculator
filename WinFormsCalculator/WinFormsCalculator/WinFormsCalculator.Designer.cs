@@ -43,9 +43,9 @@
             this.EightButton = new System.Windows.Forms.Button();
             this.SevenButton = new System.Windows.Forms.Button();
             this.CEButton = new System.Windows.Forms.Button();
-            this.BackspaceButton = new System.Windows.Forms.Button();
+            this.DeleteButton = new System.Windows.Forms.Button();
             this.DivideButton = new System.Windows.Forms.Button();
-            this.DecimalButton = new System.Windows.Forms.Button();
+            this.DotButton = new System.Windows.Forms.Button();
             this.EqualsButton = new System.Windows.Forms.Button();
             this.ZeroButton = new System.Windows.Forms.Button();
             this.ButtonLayoutPanel.SuspendLayout();
@@ -61,8 +61,6 @@
             this.NumberInput.PlaceholderText = "0";
             this.NumberInput.Size = new System.Drawing.Size(362, 50);
             this.NumberInput.TabIndex = 0;
-            this.NumberInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
-            this.NumberInput.TextChanged += new System.EventHandler(this.NumberInput_TextChanged);
             // 
             // ButtonLayoutPanel
             // 
@@ -87,9 +85,9 @@
             this.ButtonLayoutPanel.Controls.Add(this.EightButton, 1, 1);
             this.ButtonLayoutPanel.Controls.Add(this.SevenButton, 0, 1);
             this.ButtonLayoutPanel.Controls.Add(this.CEButton, 0, 0);
-            this.ButtonLayoutPanel.Controls.Add(this.BackspaceButton, 2, 0);
+            this.ButtonLayoutPanel.Controls.Add(this.DeleteButton, 2, 0);
             this.ButtonLayoutPanel.Controls.Add(this.DivideButton, 3, 0);
-            this.ButtonLayoutPanel.Controls.Add(this.DecimalButton, 2, 4);
+            this.ButtonLayoutPanel.Controls.Add(this.DotButton, 2, 4);
             this.ButtonLayoutPanel.Controls.Add(this.EqualsButton, 3, 4);
             this.ButtonLayoutPanel.Controls.Add(this.ZeroButton, 0, 4);
             this.ButtonLayoutPanel.Location = new System.Drawing.Point(12, 68);
@@ -103,7 +101,7 @@
             this.ButtonLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.ButtonLayoutPanel.Size = new System.Drawing.Size(362, 381);
             this.ButtonLayoutPanel.TabIndex = 1;
-            this.ButtonLayoutPanel.Paint += new System.Windows.Forms.PaintEventHandler(this.ButtonLayoutPanel_Paint);
+  
             // 
             // PlusButton
             // 
@@ -275,18 +273,18 @@
             this.CEButton.UseVisualStyleBackColor = true;
             this.CEButton.Click += new System.EventHandler(this.CEButton_Click);
             // 
-            // BackspaceButton
+            // DeleteButton
             // 
-            this.BackspaceButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.BackspaceButton.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.BackspaceButton.Location = new System.Drawing.Point(180, 0);
-            this.BackspaceButton.Margin = new System.Windows.Forms.Padding(0);
-            this.BackspaceButton.Name = "BackspaceButton";
-            this.BackspaceButton.Size = new System.Drawing.Size(90, 76);
-            this.BackspaceButton.TabIndex = 2;
-            this.BackspaceButton.Text = "Del";
-            this.BackspaceButton.UseVisualStyleBackColor = true;
-            this.BackspaceButton.Click += new System.EventHandler(this.BackspaceButton_Click);
+            this.DeleteButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.DeleteButton.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.DeleteButton.Location = new System.Drawing.Point(180, 0);
+            this.DeleteButton.Margin = new System.Windows.Forms.Padding(0);
+            this.DeleteButton.Name = "DeleteButton";
+            this.DeleteButton.Size = new System.Drawing.Size(90, 76);
+            this.DeleteButton.TabIndex = 2;
+            this.DeleteButton.Text = "Del";
+            this.DeleteButton.UseVisualStyleBackColor = true;
+            this.DeleteButton.Click += new System.EventHandler(this.DeleteButton_Click);
             // 
             // DivideButton
             // 
@@ -302,18 +300,18 @@
             this.DivideButton.UseVisualStyleBackColor = true;
             this.DivideButton.Click += new System.EventHandler(this.DivideButton_Click);
             // 
-            // DecimalButton
+            // DotButton
             // 
-            this.DecimalButton.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.DecimalButton.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
-            this.DecimalButton.Location = new System.Drawing.Point(180, 304);
-            this.DecimalButton.Margin = new System.Windows.Forms.Padding(0);
-            this.DecimalButton.Name = "DecimalButton";
-            this.DecimalButton.Size = new System.Drawing.Size(90, 77);
-            this.DecimalButton.TabIndex = 4;
-            this.DecimalButton.Text = ".";
-            this.DecimalButton.UseVisualStyleBackColor = true;
-            this.DecimalButton.Click += new System.EventHandler(this.DecimalButton);
+            this.DotButton.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.DotButton.Font = new System.Drawing.Font("Segoe UI", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
+            this.DotButton.Location = new System.Drawing.Point(180, 304);
+            this.DotButton.Margin = new System.Windows.Forms.Padding(0);
+            this.DotButton.Name = "DotButton";
+            this.DotButton.Size = new System.Drawing.Size(90, 77);
+            this.DotButton.TabIndex = 4;
+            this.DotButton.Text = ".";
+            this.DotButton.UseVisualStyleBackColor = true;
+            this.DotButton.Click += new System.EventHandler(this.DotButton_Click);
             // 
             // EqualsButton
             // 
@@ -354,7 +352,6 @@
             this.MinimumSize = new System.Drawing.Size(250, 330);
             this.Name = "CalculatorBase";
             this.Text = "WinForms Calculator";
-            this.Load += new System.EventHandler(this.Form1_Load);
             this.ButtonLayoutPanel.ResumeLayout(false);
             this.ResumeLayout(false);
             this.PerformLayout();
@@ -367,7 +364,7 @@
         private TableLayoutPanel ButtonLayoutPanel;
         private Button CEButton;
         private Button EqualsButton;
-        private Button BackspaceButton;
+        private Button DeleteButton;
         private Button PlusButton;
         private Button ThreeButton;
         private Button TwoButton;
@@ -381,7 +378,7 @@
         private Button EightButton;
         private Button SevenButton;
         private Button ZeroButton;
-        private Button DecimalButton;
+        private Button DotButton;
         private Button DivideButton;
     }
 }

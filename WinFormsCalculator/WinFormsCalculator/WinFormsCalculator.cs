@@ -1,8 +1,8 @@
 namespace WinFormsCalculator
 {
-/// <summary>
-/// This is my Calculator app I created to explore WinForms.
-/// </summary>
+    /// <summary>
+    /// This is my Calculator app I created to explore WinForms.
+    /// </summary>
     public partial class CalculatorBase : Form
     {
         #region Constructor
@@ -15,121 +15,204 @@ namespace WinFormsCalculator
         }
         #endregion
 
-        #region Unused
-        private void Form1_Load(object sender, EventArgs e)
-        {
-
-        }
-        private void button4_Click(object sender, EventArgs e)
-        {
-
-        }
-        private void ButtonLayoutPanel_Paint(object sender, EventArgs e)
-        {
-
-        }
-        private void NumberInput_TextChanged(object sender, EventArgs e)
-        {
-
-        }
-        #endregion
-
         #region Clear and Backspace
+        /// <summary>
+        /// Clears all text from text box.
+        /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event.</param>
         private void CEButton_Click(object sender, EventArgs e)
         {
-            
+            this.NumberInput.Text = String.Empty;
+
+            FocusInput();
         }
 
-        private void BackspaceButton_Click(object sender, EventArgs e)
+        /// <summary>
+        /// Deletes a character from the text box, functions the same as
+        ///     using the delete key.
+        /// </summary>
+        /// <param name="sender">Event sender is here.</param>
+        /// <param name="e">Event is here.</param>
+        private void DeleteButton_Click(object sender, EventArgs e)
         {
+            DeleteTextFunction();
 
+            FocusInput();
         }
         #endregion
 
         #region Operator Methods
         /// <summary>
-        /// Here are the operators
+        /// These methods insert values into the text box and refocuses the
+        ///     text box.
         /// </summary>
+        /// <param name="sender">The event sender.</param>
+        /// <param name="e">The event.</param>
         private void DivideButton_Click(object sender, EventArgs e)
         {
-
+            InsertTextFunction(" / ");
+            FocusInput();
         }
 
         private void MultiplyButton_Click(object sender, EventArgs e)
         {
-
+            InsertTextFunction(" * ");
+            FocusInput();
         }
 
         private void MinusButton_Click(object sender, EventArgs e)
         {
-
+            InsertTextFunction(" - ");
+            FocusInput();
         }
 
         private void PlusButton_Click(object sender, EventArgs e)
         {
-
+            InsertTextFunction(" + ");
+            FocusInput();
         }
 
         private void EqualsButton_Click(object sender, EventArgs e)
         {
-
+            CalculateTotal();
+            FocusInput();
         }
         #endregion
 
         #region Number Methods
+        /// <summary>
+        /// Number Methods: These methods all deal with entering values into
+        ///     the text box when clicked and refocusing the text box.
+        /// </summary>
+        /// <param name="sender">Event sender enters here.</param>
+        /// <param name="e">The Event triggered goes here.</param>
         private void SevenButton_Click(object sender, EventArgs e)
         {
-
+            InsertTextFunction("7");
+            FocusInput();
         }
 
         private void EightButton_Click(object sender, EventArgs e)
         {
-
+            InsertTextFunction("8");
+            FocusInput();
         }
 
         private void NineButton_Click(object sender, EventArgs e)
         {
-
+            InsertTextFunction("9");
+            FocusInput();
         }
 
         private void FourButton_Click(object sender, EventArgs e)
         {
-
+            InsertTextFunction("4");
+            FocusInput();
         }
 
         private void FiveButton_Click(object sender, EventArgs e)
         {
-
+            InsertTextFunction("5");
+            FocusInput();
         }
 
         private void SixButton_Click(object sender, EventArgs e)
         {
-
+            InsertTextFunction("6");
+            FocusInput();
         }
 
         private void OneButton_Click(object sender, EventArgs e)
         {
-
+            InsertTextFunction("1");
+            FocusInput();
         }
 
         private void TwoButton_Click(object sender, EventArgs e)
         {
-
+            InsertTextFunction("2");
+            FocusInput();
         }
 
         private void ThreeButton_Click(object sender, EventArgs e)
         {
-
+            InsertTextFunction("3");
+            FocusInput();
         }
 
         private void ZeroButton_Click(object sender, EventArgs e)
         {
-
+            InsertTextFunction("0");
+            FocusInput();
+        }
+        private void DotButton_Click(object sender, EventArgs e)
+        {
+            InsertTextFunction(".");
+            FocusInput();
         }
 
-        private void DecimalButton(object sender, EventArgs e)
-        {
+        #endregion
 
+        #region Method helpers and Calculation
+        /// <summary>
+        /// Focus method for focusing on text box after button click.
+        /// </summary>
+        private void FocusInput()
+        {
+            this.NumberInput.Focus();
+        }
+
+        /// <summary>
+        /// Inserts text into the text box.
+        /// </summary>
+        /// <param name="value"></param>
+        private void InsertTextFunction(string value)
+        {
+            // Remembers cursor selection point.
+            var selectionStart = this.NumberInput.SelectionStart;
+
+            // Sets new text to old text plus value.
+            this.NumberInput.Text = this.NumberInput.Text.Insert(this.NumberInput.SelectionStart, value);
+
+            // Set new cursor selection to old selection point + length of
+            //  characters entered.
+            this.NumberInput.SelectionStart = selectionStart + value.Length;
+
+            // Unhighlights text when new text is entered.
+            this.NumberInput.SelectionLength = 0;
+        }
+
+        /// <summary>
+        /// Deletes text from text box.
+        /// </summary>
+        private void DeleteTextFunction()
+        {
+            // Method does nothing if no value is there.
+            if (this.NumberInput.Text.Length < this.NumberInput.SelectionStart + 1)
+                return;
+
+            // Remembers old selection point.
+            var selectionStart = this.NumberInput.SelectionStart;
+
+            // Deletes character on right and sets it as new text.
+            this.NumberInput.Text = this.NumberInput.Text.Remove(this.NumberInput.SelectionStart, 1);
+
+            // Set new selection start to old one.
+            this.NumberInput.SelectionStart = selectionStart;
+
+            // Unhighlights text when something is deleted.
+            this.NumberInput.SelectionLength = 0;
+        }
+
+        /// <summary>
+        /// Calculates the equation and implements equation.
+        /// </summary>
+        private void CalculateTotal()
+        {
+            /*
+             * Todo
+             */
         }
         #endregion
     }
