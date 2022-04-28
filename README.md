@@ -6,9 +6,12 @@ This is my Calculator app that I created for a quick dive into WinForms. In this
 1. Create interface on WinForms.
 2. Create Event Handlers for button clicks.
 3. Create code to input button presses into input box.
+4. Add Calculating ability.
+5. Add error check handling
+
 
 
 ### Todo
-1. Add Calculating ability.
-2. Add error handling, such as: Divide by Zero, Operator mashing, entering an operator first, etc.
-3. Add functionality for keyboard presses to function as button presses.
+1. Fix error for multiple operations.
+2. Add functionality for keyboard presses to function as button presses.
+3. Fix order of operations.
