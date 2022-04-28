@@ -4,7 +4,6 @@ This is my Calculator app that I created for a quick dive into WinForms. In this
 ## Calculator Project 
 ### Completed
 1. Create interface on WinForms.
-2. Added 
 3. Create Event Handlers for button clicks.
 
 
