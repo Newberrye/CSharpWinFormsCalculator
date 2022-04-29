@@ -3,15 +3,13 @@ This is my Calculator app that I created for a quick dive into WinForms. In this
 
 ## Calculator Project 
 ### Completed
-1. Create interface on WinForms.
-2. Create Event Handlers for button clicks.
-3. Create code to input button presses into input box.
-4. Add Calculating ability.
-5. Add error check handling
-6. Fix error for multiple operations.
+1. Created interface on WinForms.
+2. Created Event Handlers for button clicks.
+3. Created code to input button presses into input box.
+4. Added Calculating ability.
+5. Added error check handling
+6. Fixed error for multiple operations.
+7. Added order of operation support for multiplication and division.
 
-
-
-
-### Todo
-1. Fix order of operations.
+### Version 2 Todo
+1. Add full order of operations support.
