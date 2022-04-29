@@ -61,6 +61,7 @@
             this.NumberInput.PlaceholderText = "0";
             this.NumberInput.Size = new System.Drawing.Size(362, 50);
             this.NumberInput.TabIndex = 0;
+            this.NumberInput.TextAlign = System.Windows.Forms.HorizontalAlignment.Right;
             // 
             // ButtonLayoutPanel
             // 
@@ -101,7 +102,6 @@
             this.ButtonLayoutPanel.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 20F));
             this.ButtonLayoutPanel.Size = new System.Drawing.Size(362, 381);
             this.ButtonLayoutPanel.TabIndex = 1;
-  
             // 
             // PlusButton
             // 

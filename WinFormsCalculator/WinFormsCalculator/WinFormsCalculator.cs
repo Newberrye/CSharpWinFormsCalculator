@@ -185,85 +185,229 @@ namespace WinFormsCalculator
                 // Holds numbers and dot for parsing.
                 var numberString = "0123456789.";
 
-                // Loops from input string from left to right
-                for(int i = 0; i < input.Length; i++)
+                /* Order of Operations Flow
+                 * Parse for * and /
+                 */
+
+                // Checks if any multiplication or division
+                if(input.Contains("*") || input.Contains("/"))
                 {
-                    // Catches numbers and period.
-                    if(numberString.Any(character => input[i] == character))
+                    // Sets variables for figuring out multiplication and division; separate cause these are unneeded if there is no multiplication or division.
+                    int multiplyIndex = input.IndexOf("*");
+                    int divideIndex = input.IndexOf("/");
+                    // Records position in string
+                    int leftIndex = 0;
+                    int rightIndex = 0;
+                    // Stops recording of operands when triggered
+                    bool leftStopper = true;
+                    bool rightStopper = true;
+                    // Holds calculation number for multiplication and division.
+                    string operationNumber = "";
+
+                    // Loops while multiplication and division signs exist
+                    while(multiplyIndex != -1 || divideIndex != -1)
                     {
-                        // Creates left side operand if on left side
-                        if (leftSide)
-                            operation.LeftSide = AddNumberPart(operation.LeftSide, input[i]);
-                        else
-                            operation.RightSide = AddNumberPart(operation.RightSide, input[i]);
-                    }
-                    // Catches operator type
-                    else if ("+-*/".Any(character => input[i] == character))
-                    {
-                        // Right side, calculate operation and set result to left side
-                        if (!leftSide)
+
+                        // Checks if multiplication symbol is before division
+                        if((multiplyIndex < divideIndex && multiplyIndex != -1) || divideIndex == -1)
                         {
-                            // Gets operator
-                            var operationType = GetOperationType(input[i]);
+                            operation.OperationType = OperationType.Multiply;
 
-                            //Check if we have a right side member
-                            if (operation.RightSide.Length == 0)
+                            // Finds first operand and records it in reverse
+                            for(int i = multiplyIndex - 1; i != -1; i--)
                             {
-                                // Check operator is not a minus
-                                if (operationType != OperationType.Minus)
+                                if (numberString.Any(character => input[i] == character) && leftStopper)
                                 {
-                                    throw new InvalidOperationException($"Operators +, *, /, or more than one - specified without a number.");
+                                    operation.LeftSide = AddNumberPart(operation.LeftSide, input[i]);
+                                    leftIndex = i;
                                 }
-                                // Add minus to number if there is no left number
-                                operation.RightSide += input[i];
+                                else
+                                {
+                                    leftStopper = false;
+                                }
                             }
-                            else
+
+                            // Turns reversed operand into an array, flips it, and turns back into a fixed array.
+                            char[] multiplyArray = operation.LeftSide.ToCharArray();
+                            Array.Reverse(multiplyArray);
+                            operation.LeftSide = "";
+                            foreach(char c in multiplyArray)
                             {
-                                // Calculate previous equation and set to the left side
-                                operation.LeftSide = CalculateOperation(operation);
-
-                                // Set new operator
-                                operation.OperationType = operationType;
-
-                                //Clear the previous right number
-                                operation.RightSide = string.Empty;
+                                operation.LeftSide += c;
                             }
+
+                            // Finds second operand and records it
+                            for (int i = multiplyIndex + 1; i <= input.Length - 1; i++)
+                            {
+                                if(numberString.Any(character => input[i] == character) && rightStopper)
+                                {
+                                    operation.RightSide = AddNumberPart(operation.RightSide, input[i]);
+                                    rightIndex = i;
+                                }
+                                else
+                                {
+                                    rightStopper = false;
+                                }
+                            }
+
+                            // Calculates Operation and records it to a string
+                            operationNumber = CalculateOperation(operation);
+
+                            // Multiplication value is removed and replaced with operation number
+                            input = input.Remove(leftIndex, rightIndex - leftIndex + 1);
+                            input = input.Insert(leftIndex, operationNumber);
                         }
-                        else
+                        else if(divideIndex != -1)
                         {
-                            // Get operator
-                            var operationType = GetOperationType(input[i]);
+                            operation.OperationType = OperationType.Divide;
 
-                            //Check if there is an operator left side number with no number on left side.
-                            if (operation.LeftSide.Length == 0)
+                            // Finds first operand and records it in reverse
+                            for (int i = divideIndex - 1; i != -1; i--)
                             {
-                                // Check operator is not a minus
-                                if (operationType != OperationType.Minus)
+                                if (numberString.Any(character => input[i] == character) && leftStopper)
                                 {
-                                    throw new InvalidOperationException($"Operators +, *, /, or more than one - specified without a number.");
+                                    operation.LeftSide = AddNumberPart(operation.LeftSide, input[i]);
+                                    leftIndex = i;
                                 }
+                                else
+                                {
+                                    leftStopper = false;
+                                }
+                            }
 
-                                // Add minus to number if there is no left number
-                                operation.LeftSide += input[i];
+                            // Turns reversed operand into an array, flips it, and turns back into a fixed array.
+                            char[] divideArray = operation.LeftSide.ToCharArray();
+                            Array.Reverse(divideArray);
+                            operation.LeftSide = "";
+                            foreach (char c in divideArray)
+                            {
+                                operation.LeftSide += c;
+                            }
+
+                            // Finds second operand and records it
+                            for (int i = divideIndex + 1; i <= input.Length - 1; i++)
+                            {
+                                if (numberString.Any(character => input[i] == character) && rightStopper)
+                                {
+                                    operation.RightSide = AddNumberPart(operation.RightSide, input[i]);
+                                    rightIndex = i;
+                                }
+                                else
+                                {
+                                    rightStopper = false;
+                                }
+                            }
+
+                            // Calculates Operation and records it to a string
+                            operationNumber = CalculateOperation(operation);
+
+                            // Multiplication value is removed and replaced with operation number
+                            input = input.Remove(leftIndex, rightIndex - leftIndex + 1);
+                            input = input.Insert(leftIndex, operationNumber);
+                        }
+
+                        // End loop check to update multiplication and division existence in equation.
+                        multiplyIndex = input.IndexOf("*");
+                        divideIndex = input.IndexOf("/");
+                        // Resets left and right operands for + and - operations
+                        operation.LeftSide = "";
+                        operation.RightSide = "";
+                        // Resets stoppers for 
+                        leftStopper = true;
+                        rightStopper = true;
+                    }
+                }
+
+                if (input.Contains("+") || input.Contains("-"))
+                {
+                    // Loops from input string from left to right
+                    for (int i = 0; i < input.Length; i++)
+                    {
+                        // Catches numbers and period.
+                        if (numberString.Any(character => input[i] == character))
+                        {
+                            // Creates left side operand if on left side
+                            if (leftSide)
+                                operation.LeftSide = AddNumberPart(operation.LeftSide, input[i]);
+                            else
+                                operation.RightSide = AddNumberPart(operation.RightSide, input[i]);
+                        }
+                        // Catches operator type
+                        else if ("+-*/".Any(character => input[i] == character))
+                        {
+                            // Right side, calculate operation and set result to left side
+                            if (!leftSide)
+                            {
+                                // Gets operator
+                                var operationType = GetOperationType(input[i]);
+
+                                //Check if we have a right side member
+                                if (operation.RightSide.Length == 0)
+                                {
+                                    // Check operator is not a minus
+                                    if (operationType != OperationType.Minus)
+                                    {
+                                        throw new InvalidOperationException($"Operators +, *, /, or more than one - specified without a number.");
+                                    }
+                                    // Add minus to number if there is no left number
+                                    operation.RightSide += input[i];
+                                }
+                                else
+                                {
+                                    // Calculate previous equation and set to the left side
+                                    operation.LeftSide = CalculateOperation(operation);
+
+                                    // Set new operator
+                                    operation.OperationType = operationType;
+
+                                    //Clear the previous right number
+                                    operation.RightSide = string.Empty;
+                                }
                             }
                             else
                             {
-                                // Left number and operator are now parsed, so move to the right
+                                // Get operator
+                                var operationType = GetOperationType(input[i]);
 
-                                // set operation type
-                                operation.OperationType = operationType;
+                                //Check if there is an operator left side number with no number on left side.
+                                if (operation.LeftSide.Length == 0)
+                                {
+                                    // Check operator is not a minus
+                                    if (operationType != OperationType.Minus)
+                                    {
+                                        throw new InvalidOperationException($"Operators +, *, /, or more than one - specified without a number.");
+                                    }
 
-                                // Move to the right side
-                                leftSide = false;
+                                    // Add minus to number if there is no left number
+                                    operation.LeftSide += input[i];
+                                }
+                                else
+                                {
+                                    // Left number and operator are now parsed, so move to the right
 
+                                    // set operation type
+                                    operation.OperationType = operationType;
+
+                                    // Move to the right side
+                                    leftSide = false;
+                                }
                             }
                         }
                     }
                 }
 
                 // If done parsing and no exceptions
-                // Calculates Operation
-                return CalculateOperation(operation);
+                // Input calculates any last minute equations, or returns input if there was only one * or /: Example 5 * 5 would trigger else.
+                if(input.Contains("+") || input.Contains("-"))
+                {
+                    // Calculates Operation
+                    return CalculateOperation(operation);
+                }
+                else
+                {
+                    return input;
+                }
+
             }
             catch (Exception ex)
             {
@@ -274,7 +418,7 @@ namespace WinFormsCalculator
         /// <summary>
         /// Calculates an operation and returns the result
         /// </summary>
-        /// <param name="operation"></param>
+        /// <param name="operation">Operation object to be calculated.</param>
         private string CalculateOperation(Operation operation)
         {
             // Store the number values
@@ -293,10 +437,9 @@ namespace WinFormsCalculator
                 throw new InvalidOperationException($"Left side of the operation was not a number: {operation.RightSide}");
             }
 
-            // Tries to operate equation.
+            // Tries to operate equation and throws an exception if it cannot.
             try
             {
-
                 switch (operation.OperationType)
                 {
                     case OperationType.Add:
@@ -315,8 +458,6 @@ namespace WinFormsCalculator
             {
                 throw new InvalidOperationException($"Failed calculation of: {left} {operation.OperationType} {right} | {ex.Message}");
             }
-
-
         }
 
         /// <summary>
@@ -345,8 +486,6 @@ namespace WinFormsCalculator
         /// </summary>
         /// <param name="currentNumber">The current number string.</param>
         /// <param name="currentCharacter">The new character being added.</param>
-        /// <returns></returns>
-        /// <exception cref="NotImplementedException"></exception>
         private string AddNumberPart(string currentNumber, char newCharacter)
         {
             // Check if there is already a . in the number

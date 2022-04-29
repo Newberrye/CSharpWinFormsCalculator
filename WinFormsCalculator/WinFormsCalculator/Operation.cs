@@ -24,6 +24,7 @@ public class Operation
     public Operation InnerOperation { get; set; }
     #endregion
 
+    #region Method
     /// <summary>
     /// Default constructor
     /// </summary>
@@ -33,4 +34,5 @@ public class Operation
         this.LeftSide = string.Empty;
         this.RightSide = string.Empty;
     }
+    #endregion
 }
