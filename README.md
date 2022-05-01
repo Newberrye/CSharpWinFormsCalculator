@@ -10,6 +10,8 @@ This is my Calculator app that I created for a quick dive into WinForms. In this
 5. Added error check handling
 6. Fixed error for multiple operations.
 7. Added order of operation support for multiplication and division.
+8. Fixed edge cases for negative numbers with multiplication and division.
+9. Fixed edge cases for minuses.
 
 ### Version 2 Todo
 1. Add full order of operations support.
