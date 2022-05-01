@@ -192,7 +192,7 @@ namespace WinFormsCalculator
                  */
 
                 // Checks if any multiplication or division
-                if(input.Contains("*") || input.Contains("/"))
+                if(input.Contains('*') || input.Contains('/'))
                 {
                     // Sets variables for figuring out multiplication and division; separate cause these are unneeded if there is no multiplication or division.
                     int multiplyIndex = input.IndexOf("*");
@@ -330,9 +330,13 @@ namespace WinFormsCalculator
                         rightStopper = true;
                     }
                 }
-                // Handles addition and subtraction if there are any. Minus needs checks for a negative number input from user/multiplication/division rather than an equation.
-                if (input.Contains("+") || (input.Contains("-") && input.Count(frequency => (frequency == '-')) != 1 && input.IndexOf('-') == 0))
+                // Handles addition and subtraction if there are any.
+                if (input.Contains('+') || input.Contains('-'))
                 {
+                    // Checks for just a negative numbers rather than an equation: Example -1 would trigger this.
+                    if (!input.Contains('+') && input.Count(frequency => frequency == '-') == 1 && input[0] == '-')
+                        return input;
+
                     // Loops from input string from left to right
                     for (int i = 0; i < input.Length; i++)
                     {
@@ -411,7 +415,7 @@ namespace WinFormsCalculator
 
                 // If done parsing and no exceptions
                 // Input calculates any last minute equations, or returns input if there was only one * or /: Example 5 * 5 would trigger else.
-                if(input.Contains("+") || (input.Contains("-") && input.Count(frequency => (frequency == '-')) != 1 && input.IndexOf('-') == 0))
+                if(input.Contains("+") || input.Contains("-"))
                 {
                     // Calculates Operation
                     return CalculateOperation(operation);
