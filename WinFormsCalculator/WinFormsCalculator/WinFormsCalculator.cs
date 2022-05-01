@@ -3,6 +3,7 @@ namespace WinFormsCalculator
     /// <summary>
     /// This is my Calculator app I created to explore WinForms.
     /// </summary>
+    /// 
     public partial class CalculatorBase : Form
     {
         #region Constructor
@@ -187,6 +188,7 @@ namespace WinFormsCalculator
 
                 /* Order of Operations Flow
                  * Parse for * and /
+                 * Parse for + and -
                  */
 
                 // Checks if any multiplication or division
@@ -208,7 +210,7 @@ namespace WinFormsCalculator
                     while(multiplyIndex != -1 || divideIndex != -1)
                     {
 
-                        // Checks if multiplication symbol is before division
+                        // Checks if multiplication symbol is before division; does multiplication
                         if((multiplyIndex < divideIndex && multiplyIndex != -1) || divideIndex == -1)
                         {
                             operation.OperationType = OperationType.Multiply;
@@ -236,10 +238,15 @@ namespace WinFormsCalculator
                                 operation.LeftSide += c;
                             }
 
-                            // Finds second operand and records it
+                            // Finds second operand and records it; Second else if catches minus sign for negatives
                             for (int i = multiplyIndex + 1; i <= input.Length - 1; i++)
                             {
                                 if(numberString.Any(character => input[i] == character) && rightStopper)
+                                {
+                                    operation.RightSide = AddNumberPart(operation.RightSide, input[i]);
+                                    rightIndex = i;
+                                }
+                                else if(i == multiplyIndex + 1 && input[i] == '-')
                                 {
                                     operation.RightSide = AddNumberPart(operation.RightSide, input[i]);
                                     rightIndex = i;
@@ -257,6 +264,7 @@ namespace WinFormsCalculator
                             input = input.Remove(leftIndex, rightIndex - leftIndex + 1);
                             input = input.Insert(leftIndex, operationNumber);
                         }
+                        // Division side
                         else if(divideIndex != -1)
                         {
                             operation.OperationType = OperationType.Divide;
@@ -284,10 +292,15 @@ namespace WinFormsCalculator
                                 operation.LeftSide += c;
                             }
 
-                            // Finds second operand and records it
+                            // Finds second operand and records it; second else if catches minus for negative numbers.
                             for (int i = divideIndex + 1; i <= input.Length - 1; i++)
                             {
                                 if (numberString.Any(character => input[i] == character) && rightStopper)
+                                {
+                                    operation.RightSide = AddNumberPart(operation.RightSide, input[i]);
+                                    rightIndex = i;
+                                }
+                                else if (i == divideIndex + 1 && input[i] == '-')
                                 {
                                     operation.RightSide = AddNumberPart(operation.RightSide, input[i]);
                                     rightIndex = i;
@@ -301,7 +314,7 @@ namespace WinFormsCalculator
                             // Calculates Operation and records it to a string
                             operationNumber = CalculateOperation(operation);
 
-                            // Multiplication value is removed and replaced with operation number
+                            // Division value is removed and replaced with operation number
                             input = input.Remove(leftIndex, rightIndex - leftIndex + 1);
                             input = input.Insert(leftIndex, operationNumber);
                         }
@@ -317,8 +330,8 @@ namespace WinFormsCalculator
                         rightStopper = true;
                     }
                 }
-
-                if (input.Contains("+") || input.Contains("-"))
+                // Handles addition and subtraction if there are any. Minus needs checks for a negative number input from user/multiplication/division rather than an equation.
+                if (input.Contains("+") || (input.Contains("-") && input.Count(frequency => (frequency == '-')) != 1 && input.IndexOf('-') == 0))
                 {
                     // Loops from input string from left to right
                     for (int i = 0; i < input.Length; i++)
@@ -398,7 +411,7 @@ namespace WinFormsCalculator
 
                 // If done parsing and no exceptions
                 // Input calculates any last minute equations, or returns input if there was only one * or /: Example 5 * 5 would trigger else.
-                if(input.Contains("+") || input.Contains("-"))
+                if(input.Contains("+") || (input.Contains("-") && input.Count(frequency => (frequency == '-')) != 1 && input.IndexOf('-') == 0))
                 {
                     // Calculates Operation
                     return CalculateOperation(operation);
