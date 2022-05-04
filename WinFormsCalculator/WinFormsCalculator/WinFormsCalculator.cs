@@ -161,9 +161,13 @@ namespace WinFormsCalculator
         /// </summary>
         private void CalculateTotal()
         {
-            // Adds equal and operation name.
-            this.NumberInput.Text += " = " + ParseOperation();
+            // Calculates result, parses out a double, and equal plus result is shown
+            double.TryParse(ParseOperation(), out double result);
+            this.NumberInput.Text += $" = {result:N5}";
             FocusInput();
+
+            // Selection cursor is moved to the end of NumberInput so the result is always seen.
+            this.NumberInput.SelectionStart = this.NumberInput.TextLength;
         }
 
         /// <summary>
@@ -210,7 +214,7 @@ namespace WinFormsCalculator
                     while(multiplyIndex != -1 || divideIndex != -1)
                     {
 
-                        // Checks if multiplication symbol is before division; does multiplication
+                        // Checks if multiplication symbol is before division; first if does multiplication
                         if((multiplyIndex < divideIndex && multiplyIndex != -1) || divideIndex == -1)
                         {
                             operation.OperationType = OperationType.Multiply;
@@ -229,7 +233,7 @@ namespace WinFormsCalculator
                                 }
                             }
 
-                            // Turns reversed operand into an array, flips it, and turns back into a fixed array.
+                            // Turns reversed operand into an array, flips it, and turns back a string.
                             char[] multiplyArray = operation.LeftSide.ToCharArray();
                             Array.Reverse(multiplyArray);
                             operation.LeftSide = "";
@@ -283,7 +287,7 @@ namespace WinFormsCalculator
                                 }
                             }
 
-                            // Turns reversed operand into an array, flips it, and turns back into a fixed array.
+                            // Turns reversed operand into an array, flips it, and turns back into a string.
                             char[] divideArray = operation.LeftSide.ToCharArray();
                             Array.Reverse(divideArray);
                             operation.LeftSide = "";
@@ -325,7 +329,7 @@ namespace WinFormsCalculator
                         // Resets left and right operands for + and - operations
                         operation.LeftSide = "";
                         operation.RightSide = "";
-                        // Resets stoppers for 
+                        // Resets stoppers for operand grabbing
                         leftStopper = true;
                         rightStopper = true;
                     }
@@ -340,7 +344,7 @@ namespace WinFormsCalculator
                     // Loops from input string from left to right
                     for (int i = 0; i < input.Length; i++)
                     {
-                        // Catches numbers and period.
+                        // Catches numbers and decimal place.
                         if (numberString.Any(character => input[i] == character))
                         {
                             // Creates left side operand if on left side
@@ -414,7 +418,7 @@ namespace WinFormsCalculator
                 }
 
                 // If done parsing and no exceptions
-                // Input calculates any last minute equations, or returns input if there was only one * or /: Example 5 * 5 would trigger else.
+                // Input calculates any last minute equations, or returns input if there was only one * or /: Example 5 * 5 would become 25 and trigger else.
                 if(input.Contains("+") || input.Contains("-"))
                 {
                     // Calculates Operation
@@ -428,7 +432,7 @@ namespace WinFormsCalculator
             }
             catch (Exception ex)
             {
-                return $"Invalid equition. {ex.Message}";
+                return $"Invalid equation. {ex.Message}";
             }
         }
 
@@ -464,7 +468,7 @@ namespace WinFormsCalculator
                     case OperationType.Minus:
                         return Math.Round(left - right, 5).ToString();
                     case OperationType.Multiply:
-                        return Math.Round(left * right, 5).ToString();
+                        return Math.Round(left * right).ToString();
                     case OperationType.Divide:
                         return Math.Round(left / right, 5).ToString();
                     default:
